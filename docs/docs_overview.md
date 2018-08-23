@@ -1,6 +1,16 @@
-# Hyperstack 1.0
+# Welcome to Hyperstack!
 
-## Release goals:
+**Hyperstack 1.0 and Hyperstack 2.0 are work-in-progress. Please consider everything in this repo as ALPHA.**
+
+Hyperloop (version 0.9) is stable, and the existing website remains in place. If you are looking for a production ready project, then please stay there until this is released. http://ruby-hyperloop.org
+
+In this project, there are two Hyperstack implementations (HS1 and HS2). The goals of each are detailed below.
+
+This website loads all content dynamically from the HS1 and HS2 projects. You can switch the document base using the link in topbar.  
+
+## Hyperstack 1.0 (HS1)
+
+### Release goals:
 
 + Solidify current Hyperloop DSLs, Public APIs, documentation and tutorials.
 + Close any major issues, especially those that will potentially break or add significantly to DSLs or Public APIs.
@@ -10,13 +20,13 @@
 + Brand new website completely built with Hyperstack technology
 + CI/CD build and deploy process for all NPM modules, Gems and the Website project
 
-## Change management needed:
+### Change management needed:
 
 + Explain the Hyperloop rename / mostly done
 + Launch new website / mostly done
 + Update docs, setup and tutorials
 
-## Out of scope / constraints:
+### Out of scope / constraints:
 
 + No DSL or API changes, installation changes are fine, but Hyperloop 0.9 DSL code must just-work with HS1
 + Any functional changes/bug fixes made in this codebase must serve as a reference in the HS2 codebase (a merge is unlikely)
