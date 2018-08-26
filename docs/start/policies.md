@@ -1,6 +1,6 @@
 # Policies
 
-Hyperloop uses Policies to regulate what connections are opened between clients and the server and what data is distributed over those connections.
+Hyperstack uses Policies to regulate what connections are opened between clients and the server and what data is distributed over those connections.
 
 ### Policy Classes
 
@@ -69,4 +69,4 @@ end
 
 --------------------------
 
-That concludes this introduction to Hyperloop, but before you go on to our Tutorials or Docs, please read the next section where we describe our pragmatic approach to architecture.
+That concludes this introduction to Hyperstack, but before you go on to our Tutorials or Docs, please read the next section where we describe our pragmatic approach to architecture.

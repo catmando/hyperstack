@@ -1,6 +1,6 @@
 # Stores
 
-Hyperloop Stores (similar to Flux Stores) exist to hold local application state. Components read state from Stores and render accordingly. This separation of concerns is an improvement in the overall architecture and makes your application easier to maintain.
+Hyperstack Stores (similar to Flux Stores) exist to hold local application state. Components read state from Stores and render accordingly. This separation of concerns is an improvement in the overall architecture and makes your application easier to maintain.
 
 **Why would we have Stores?** Let's examine that question through an example.
 
@@ -9,7 +9,7 @@ Hyperloop Stores (similar to Flux Stores) exist to hold local application state.
 Take the simple Component below which displays an initial discount then gives the user the option of taking a once only 'Lucky Dip' that will either increase or decrease their discount.
 
 ```ruby
-class OfferLuckyDip < Hyperloop::Component
+class OfferLuckyDip < Hyperstack::Component
   state discount: 30
 
   render(DIV) do
@@ -26,7 +26,7 @@ The Component will work as you would expect but there are two fundamental proble
 + Firstly, the discount (state) is tied to the Component itself. This is a problem as we might have other Components on the page which need to also see and interact with the discount. **We need a better place than in our Components to keep application state.**
 + Our business logic (discounts start at 30% and the lucky dip increases or decreases by 5%) is all wrapped up with our presentational code. This makes our application fragile and difficult to evolve. **Our application logic should be separate from our display logic.**
 
-We will fix these problems but first implementing a Hyperloop Store to keep our application state and business logic out of our Components.
+We will fix these problems but first implementing a Hyperstack Store to keep our application state and business logic out of our Components.
 
 Later in this overview, we will go one step further and move our business logic out of the Store into an Operation but for now, the first step will be a big improvement.
 
@@ -34,21 +34,21 @@ Later in this overview, we will go one step further and move our business logic 
 
 Stores are where the state of your Application lives. Anything but a completely static web page will have dynamic states that change because of user inputs, the passage of time, or other external events.
 
-You can also create Stores by subclassing `Hyperloop::Store` or `Hyperloop::Store::Mixin` can be mixed into any class to turn it into a Flux Store.
+You can also create Stores by subclassing `Hyperstack::Store` or `Hyperstack::Store::Mixin` can be mixed into any class to turn it into a Flux Store.
 
 Components that read a Store's state will automatically update when the state changes. Stores are simply Ruby classes that keep the dynamic parts of the state in special state variables.
 
 First, let's add a Store and refactor our Component to use the Store:
 
 ```ruby runable
-class Discounter < Hyperloop::Store
+class Discounter < Hyperstack::Store
    state discount: 30, scope: :class, reader: true
   def self.lucky_dip!
     mutate.discount( state.discount + rand(-5..5) )
   end
 end
 
-class OfferLuckyDip < Hyperloop::Component
+class OfferLuckyDip < Hyperstack::Component
   render(DIV) do
     H1 {"Your discount is #{Discounter.discount}%"}
     BUTTON { "Lucky Dip" }.on(:click) do
@@ -64,7 +64,7 @@ You will notice a few things in the code above:
 + We do not create an instance of the Discounter class but instead access the class methods of the Store `Discounter.lucky_dip!` so that all Components will be using the same 'class instance' of the Store.
 + `Discounter.discount` is a reader class method that was added to the Store for us by `state discount: 30, scope: :class, reader: true` which saved us a lot of typing!
 
-Stores can also receive dispatches from Operations - we will come to that later in this overview. In Hyperloop it is perfectly legitimate to interact with a Store through its class methods as we have done above.
+Stores can also receive dispatches from Operations - we will come to that later in this overview. In Hyperstack it is perfectly legitimate to interact with a Store through its class methods as we have done above.
 
 ### Sharing Stores
 
@@ -73,7 +73,7 @@ Components share state through Stores. Without the Store architecture, Component
 Lets explore and example where Components share a Store:
 
 ```ruby runable
-class TopLevelComponent < Hyperloop::Component
+class TopLevelComponent < Hyperstack::Component
   render do
     DIV(class: 'container') do
       H1 { "Components sharing a Store" }
@@ -83,7 +83,7 @@ class TopLevelComponent < Hyperloop::Component
   end
 end
 
-class MyStore < Hyperloop::Store
+class MyStore < Hyperstack::Store
   state :value, reader: true, scope: :class
   def self.set_value! value
     mutate.value value
@@ -93,7 +93,7 @@ class MyStore < Hyperloop::Store
   end
 end
 
-class TypeAlong < Hyperloop::Component
+class TypeAlong < Hyperstack::Component
   render(DIV) do
     INPUT(type: :text, value: MyStore.value ).on(:change) do |e|
       MyStore.set_value! e.target.value
@@ -102,7 +102,7 @@ class TypeAlong < Hyperloop::Component
   end
 end
 
-class Buttons < Hyperloop::Component
+class Buttons < Hyperstack::Component
   render(DIV) do
     BUTTON(class: 'btn btn-primary') { 'See the value' }.on(:click) do
       alert "MyStore value is '#{ MyStore.value }'"
@@ -116,7 +116,7 @@ end
 
 You will notice in the code above:
 
-+ We laid our page out using a TopLevelComponent who's job it was to render the other Components. This is a typical pattern in Hyperloop, an HTML page can consist of a simple DIV and one TopLevelComponent and all rendering is done by that Component. Often this will contain a router as each new 'page' will be rendered in this DIV.
++ We laid our page out using a TopLevelComponent who's job it was to render the other Components. This is a typical pattern in Hyperstack, an HTML page can consist of a simple DIV and one TopLevelComponent and all rendering is done by that Component. Often this will contain a router as each new 'page' will be rendered in this DIV.
 
 + We are using a class instance of MyStore so all the Components on the page will share the same instance. Note how we defined `state :value, reader: true, scope: :class` and also how the methods are class methods `def self.clear!`
 + The bang notation (!) is a matter of style, but used here to indicate a mutation.

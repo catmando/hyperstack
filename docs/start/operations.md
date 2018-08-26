@@ -1,6 +1,6 @@
 # Operations
 
-Operations are the engine rooms of Hyperloop, they orchestrate the interactions between Components, external services, Models and Stores. **Operations are where your business logic lives.**
+Operations are the engine rooms of Hyperstack, they orchestrate the interactions between Components, external services, Models and Stores. **Operations are where your business logic lives.**
 
 In a traditional MCV architecture, there is no defined place to keep business logic. You can overload your Controllers, Views or Models and (unless you follow a defined pattern like Trailblazer) you generally end up with your business logic all over the place. Our vision of building a 'Complete Ruby Isomorphic Framework' meant that we had to address that problem head on, so we created Operations.
 
@@ -12,7 +12,7 @@ The design of our Operations has been inspired by a few sources:
 
 **Operations execute on the clients or the server.** This simple principal radically simplifies application design and testing.
 
-Hyperloop Operations work in three ways:
+Hyperstack Operations work in three ways:
 
 1. They `run` a sequence of `steps`. Each step is a progressive step in a workflow, only continuing to the next step if the current step succeeds. This mode borrows from Trailblazer's concept of an Operation.
 2. Much like Flux Actions, Stores can `receive` Operations so a Store can watch for an Operation being dispatched and act accordingly. This shifts the responsibility to the Store mutate its state when an Operation is dispatched.
@@ -23,7 +23,7 @@ Hyperloop Operations work in three ways:
 Stores hold state and Operations orchestrate the mutation of state. In the Store chapter, we demonstrated how a class method on the Store could be used to mutate the state. In this example, we will have an Operation mutate the Store's state instead:
 
 ```ruby runable
-class Discounter < Hyperloop::Store
+class Discounter < Hyperstack::Store
    state discount: 30, scope: :class, reader: true
    state tries: 0, scope: :class, reader: true
 
@@ -32,7 +32,7 @@ class Discounter < Hyperloop::Store
     mutate.tries(state.tries + 1)
   end
 
-  class LuckyDipOp < Hyperloop::Operation
+  class LuckyDipOp < Hyperstack::Operation
     def check_tries
       puts Discounter.tries
       abort! if Discounter.tries > 2
@@ -42,7 +42,7 @@ class Discounter < Hyperloop::Store
   end
 end
 
-class OfferLuckyDip < Hyperloop::Component
+class OfferLuckyDip < Hyperstack::Component
 
   render(DIV) do
     H1 {"Your discount is #{Discounter.discount}%"}
@@ -67,11 +67,11 @@ This little example Operation will dispatch a message that a Store will receive.
 **All Operations dispatch but it up to a Store to receive a dispatch.**
 
 ```ruby
-class Logout < Hyperloop::Operation
+class Logout < Hyperstack::Operation
   # do the actual logout
 end
 
-class NavBarStore < Hyperloop::Store
+class NavBarStore < Hyperstack::Store
   state user_name: "Fred", scope: :class, reader: true
 
   receives Logout do
@@ -80,7 +80,7 @@ class NavBarStore < Hyperloop::Store
   end
 end
 
-class UserPage < Hyperloop::Component
+class UserPage < Hyperstack::Component
   render(DIV) do
     P { "Current user: #{NavBarStore.user_name}" }
     BUTTON { "Logout" }.on(:click) do
@@ -101,7 +101,7 @@ That said, with our highest goal being developer productivity, it should be as i
 In some cases there might be Operation logic that you want to ensure always runs on the server, as per the example below:
 
 ```ruby
-class ValidateUserCredentials < Hyperloop::ServerOp
+class ValidateUserCredentials < Hyperstack::ServerOp
   param :acting_user
   add_error :acting_user, :no_valid_default_cc, "No valid default credit card" do
     !params.acting_user.has_default_cc?
@@ -114,15 +114,15 @@ end
 You can also broadcast the dispatch from Server Operations to all authorized clients. The `dispatch_to` method will determine a list of channels to broadcast the dispatch to:
 
 ```ruby
-class Announcement < Hyperloop::ServerOp
+class Announcement < Hyperstack::ServerOp
   # no acting_user because we don't want clients to invoke the Operation
   param :message
   param :duration, type: Float, nils: true
-  # dispatch to the builtin Hyperloop::Application Channel
-  dispatch_to Hyperloop::Application
+  # dispatch to the builtin Hyperstack::Application Channel
+  dispatch_to Hyperstack::Application
 end
 
-class CurrentAnnouncements < Hyperloop::Store
+class CurrentAnnouncements < Hyperstack::Store
   state_reader all: [], scope: :class
   receives Announcement do
     mutate.all << params.message

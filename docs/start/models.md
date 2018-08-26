@@ -4,12 +4,12 @@ Much like Stores, Models hold state which Components watch and re-render when th
 
 Components, Operations and Stores have no backend dependancy, but Models and Policies are integrated with Rails and require a Rails backend.
 
-Your ActiveRecord Models are accessible in your isomorphic code. Models are an Isomorphic ActiveRecord wrapper for Hyperloop.
+Your ActiveRecord Models are accessible in your isomorphic code. Models are an Isomorphic ActiveRecord wrapper for Hyperstack.
 
 You access your Models as simply as this:
 
 ```ruby
-class BookList < Hyperloop::Component
+class BookList < Hyperstack::Component
 
   render(UL) do
     Book.all.each do |book|
@@ -24,13 +24,13 @@ There are a few important things to notice:
 + Firstly let's discuss what's missing - there is no API, no Controllers - no boiler-plate code whose purpose if simply to transfer data from the server to the client.
 +  You have full access to your ActiveRecord Models in your client side code as if you were accessing them inside an ERB file.
 + With pre-rendering, the page is rendered by the server before being delivered to the client. This rendering process uses ActiveRecord in exactly the same way as rendering an ERB file would do.
-+ The key difference is that the same code will run in the browser, the same simple Ruby code will be compiled into JavaScript and Hyperloop will provide all the infrastructure necessary to query the server and deliver the data to the client.
++ The key difference is that the same code will run in the browser, the same simple Ruby code will be compiled into JavaScript and Hyperstack will provide all the infrastructure necessary to query the server and deliver the data to the client.
 
-**No boilerplate API, no serialisation, no de-serialisation.** Much like Relay and GraphQL, when rendering, Hyperloop parses through each Component and establishes which fields are necessary then queries just for those fields which are returned as JSON and then inserted into each Component. The key difference with Relay is that both the client and server code is provided by Hyperloop so the entire process is seamless for the developer.
+**No boilerplate API, no serialisation, no de-serialisation.** Much like Relay and GraphQL, when rendering, Hyperstack parses through each Component and establishes which fields are necessary then queries just for those fields which are returned as JSON and then inserted into each Component. The key difference with Relay is that both the client and server code is provided by Hyperstack so the entire process is seamless for the developer.
 
 ### CRUD Access
 
-Hyperloop provides full CRUD access to your ActiveRecord models.
+Hyperstack provides full CRUD access to your ActiveRecord models.
 
 The save method works like ActiveRecord save, except it returns a promise that is resolved when the save completes (or fails.)
 
@@ -50,7 +50,7 @@ Changes made to Models on a client or server are automatically synchronized to a
 
 Components read Stores and Models in order to display data. If during the rendering of the Component the Model data is not yet loaded, placeholder values (the default values from the columns_hash) will be returned to the Component.
 
-Hyperloop then keeps track of where these placeholders (or DummyValues) are displayed, compiles a request to send to the server which is then read from the database and returned as JSON and the Components are re-rendered with the correct data.
+Hyperstack then keeps track of where these placeholders (or DummyValues) are displayed, compiles a request to send to the server which is then read from the database and returned as JSON and the Components are re-rendered with the correct data.
 
 If later the data changes (either due to local user actions, or receiving push updates) then again any parts of the display that were dependent on the current values will be re-rendered.
 

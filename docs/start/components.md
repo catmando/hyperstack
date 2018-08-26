@@ -2,27 +2,27 @@
 
 # Work in progress - ALPHA (code and docs)
 
-Hyperloop user interfaces are composed of React Components written in Ruby.
+Hyperstack user interfaces are composed of React Components written in Ruby.
 
 Here is the basic structure of a Component:
 
 ```ruby
-class StrippedBackComponent < Hyperloop::Component
+class StrippedBackComponent < Hyperstack::Component
   render(DIV) do
   end
 end
 ```
 
-A Component is just a Ruby class inherited from `Hyperloop::Component`. At a minimum, a Component must implement a `render` macro that returns **just one** HTML element.
+A Component is just a Ruby class inherited from `Hyperstack::Component`. At a minimum, a Component must implement a `render` macro that returns **just one** HTML element.
 
-Under the covers, Hyperloop uses Opal to compile this Component into JavaScript then hands it to React to mount as a regular JavaScript React Component.
+Under the covers, Hyperstack uses Opal to compile this Component into JavaScript then hands it to React to mount as a regular JavaScript React Component.
 
-As with React, there are no templates in Hyperloop, your user interface is made up of Components which mix conditional logic and HTML elements to build the user interface. Unlike React, where you code in JSX and JavaScript, Hyperloop lets you keep all your code in Ruby.
+As with React, there are no templates in Hyperstack, your user interface is made up of Components which mix conditional logic and HTML elements to build the user interface. Unlike React, where you code in JSX and JavaScript, Hyperstack lets you keep all your code in Ruby.
 
 Let's add a little functionality to this Component - you can edit this code if you would like to experiment.
 
 ```ruby runable
-class SimpleComponent < Hyperloop::Component
+class SimpleComponent < Hyperstack::Component
   render(DIV) do
     BUTTON { 'Push the button' }.on(:click) do
      alert 'You did it!'
@@ -39,10 +39,10 @@ There are a few things to notice in the code above.
 
 ### Rendering Components
 
-Hyperloop's architecture encourages you to write simple Components that perform single tasks and render other Components.
+Hyperstack's architecture encourages you to write simple Components that perform single tasks and render other Components.
 
 ```ruby
-class App < Hyperloop::Component
+class App < Hyperstack::Component
   render(DIV) do
     MainNavigation {}
     PageContents {}
@@ -60,14 +60,14 @@ Data is passed downward from a parent Component to its children. There are vario
 For now, let's experiment with passing parameters:
 
 ```ruby runable
-class MeeterGreeter < Hyperloop::Component
+class MeeterGreeter < Hyperstack::Component
   render(DIV) do
     SayHelloTo(name: "John")
     SayHelloTo(name: "Sally")
   end
 end
 
-class SayHelloTo < Hyperloop::Component
+class SayHelloTo < Hyperstack::Component
   param :name, type: String
 
   render(DIV) do
@@ -90,7 +90,7 @@ The best way to think about this is to imagine your code constantly looping and 
 Lets experiment with an example:
 
 ```ruby runable
-class StateExample < Hyperloop::Component
+class StateExample < Hyperstack::Component
   state show_field: false
   state field_value: ""
 
@@ -128,12 +128,12 @@ A few things to notice in the code above:
 
 ### Stylish Components
 
-Conditional logic, HTML elements, state and style all intermingle in a Hyperloop Component.
+Conditional logic, HTML elements, state and style all intermingle in a Hyperstack Component.
 
-As an example, this Hyperloop website uses Bootstrap CSS, so we have complete access to the Bootstrap CSS from within our Components:
+As an example, this Hyperstack website uses Bootstrap CSS, so we have complete access to the Bootstrap CSS from within our Components:
 
 ```ruby runable
-class StylishTable < Hyperloop::Component
+class StylishTable < Hyperstack::Component
   render(DIV) do
     TABLE(class: 'table table-bordered') do
       THEAD do
@@ -161,18 +161,18 @@ end
 
 JavaScript components are accessed directly from within your Ruby code!
 
-It is important to emphasize that Hyperloop gives you full access to **all JavaScript libraries and components from directly within your Ruby code.** Everything you can do in JavaScript is simple to do in Ruby, this includes passing parameters between Ruby and JavaScript and even passing in Ruby lambdas as JavaScript callbacks.
+It is important to emphasize that Hyperstack gives you full access to **all JavaScript libraries and components from directly within your Ruby code.** Everything you can do in JavaScript is simple to do in Ruby, this includes passing parameters between Ruby and JavaScript and even passing in Ruby lambdas as JavaScript callbacks.
 
 There are a few ways of accomplishing this, one of which is demonstrated below. Here we wrap a JavaScript library `ReactPlayer` with a Ruby class `Player` so that it is accessible in our Ruby code.
 
-You can also import JavaScript libraries using NPM/Yarn and Webpack/Webpacker and have them available to your Hyperloop Components. We have tutorials which will show you exactly how this works.
+You can also import JavaScript libraries using NPM/Yarn and Webpack/Webpacker and have them available to your Hyperstack Components. We have tutorials which will show you exactly how this works.
 
 ```ruby runable
 class Player < React::Component::Base
   imports 'ReactPlayer'
 end
 
-class LiftOff < Hyperloop::Component
+class LiftOff < Hyperstack::Component
 
   render(DIV) do
     Player(url:  'https://www.youtube.com/embed/Czrc1JfIBRw',

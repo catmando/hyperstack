@@ -1,6 +1,8 @@
 
 # TodoMVC Tutorial (Rails 5.2.0)
 
+THIS TUTORIAL USES HYPERLOOP NAMING - THIS MUST BE CHANGED
+
 ### Prerequisites
 
 { [Ruby On Rails](http://rubyonrails.org/) }
